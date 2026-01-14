@@ -8,7 +8,7 @@ const router = Router()
 router.get("/get-friends", getFriendsList) //{user}
 router.get("/search", getSearchQueryUsersList) //query {search}
 router.post("/:userName", sendMessageToUser) //params, {receiver}, {sender, message}
-router.get("/:userName", getChatHistory) //params {userName}
+router.get("/:userName", getChatHistory) //params {userName}, {sender, start, end}
 
 
 

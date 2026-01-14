@@ -1,3 +1,4 @@
+import chatModel from "../models/userChatModel.js";
 import userModel from "../models/userModel.js";
 
 
@@ -5,14 +6,15 @@ export type userModelFriendListType = { name: string, unread: number }
 export const getUserFriendsList = async (user: string): Promise<{ success: boolean; friendsList: userModelFriendListType[] }> => {
     try {
 
-        const userFriendsListBeforeUpdate: { chatFriendsList: userModelFriendListType[] } | {} = (await userModel.findOne({ userName: user }, { chatFriendsList: 1 }))!
-        if ("chatFriendsList" in userFriendsListBeforeUpdate) {
-            for (const friend of userFriendsListBeforeUpdate.chatFriendsList) {
-                await updateFriendsList(user, friend.name)
-            }
-        }
+        // const userFriendsListBeforeUpdate: { chatFriendsList: userModelFriendListType[] } | {} = (await userModel.findOne({ userName: user }, { chatFriendsList: 1 }))!
+        // if ("chatFriendsList" in userFriendsListBeforeUpdate) {
+        //     for (const friend of userFriendsListBeforeUpdate.chatFriendsList) {
+        //         await updateUnReadCount(user, friend.name)
+        //     }
+        // }
         const friendsList = await userModel.findOne({ userName: user }, { chatFriendsList: 1 })
         console.log({ section: "getting user friend List", status: "success" })
+        console.log(friendsList?.chatFriendsList as userModelFriendListType[])
         return {
             success: true,
             friendsList: friendsList?.chatFriendsList as userModelFriendListType[]
@@ -37,7 +39,9 @@ export const changeChatList = async (receiver: string, sender: string): Promise<
             {
                 $pull: {
                     chatFriendsList: {
-                        $in: [sender, receiver]
+                        name: {
+                            $in: [sender, receiver]
+                        }
                     }
                 }
             }
@@ -46,7 +50,7 @@ export const changeChatList = async (receiver: string, sender: string): Promise<
         await updateFriendsList(receiver, sender)
         const updatedFriendsList = await getUserFriendsList(sender)
         if (!updatedFriendsList.success) {
-            console.log({ section: "changing chat list", status: "success" })
+            console.log({ section: "changing chat list", status: "success-if-failed" })
             return {
                 success: false,
                 friendsList: []
@@ -70,8 +74,9 @@ export const changeChatList = async (receiver: string, sender: string): Promise<
 
 export const addToFriendsList = async ({ receiver, sender }: { receiver: string; sender: string }): Promise<boolean> => {
     try {
-        const friendExists = await userModel.find({ userName: sender, chatFriendsList: receiver })
-        if (!friendExists) {
+        const friendExists = await userModel.find({ userName: sender, "chatFriendsList.name": receiver })
+        console.log("checking friend exists", friendExists)
+        if (friendExists.length === 0) {
             await updateFriendsList(sender, receiver)
             await updateFriendsList(receiver, sender)
             console.log({ section: "adding to friends list to friend doesn't exists", status: "success" })
@@ -88,18 +93,25 @@ export const addToFriendsList = async ({ receiver, sender }: { receiver: string;
 
 
 const updateFriendsList = async (user: string, friend: string): Promise<void> => {
-    await userModel.updateOne({
+
+    try {
+        const unReadCount = await getUnreadCount(user, friend)
+        await userModel.updateOne({
         userName: user
     },
         {
             $push: {
                 chatFriendsList: {
-                    $each: [friend],
+                    $each: [{name: friend, unread: unReadCount?.unreadCount}],
                     $position: 0
                 }
             }
         }
     )
+    } catch (error) {
+        
+    }
+    
 }
 
 
@@ -128,10 +140,10 @@ export const searchFriends = async (searchQuery: string): Promise<{ fetched: boo
 
 
 
-export const updateUnReadCount = async (user: string, userFriend: string): Promise<boolean> => {
+export const getUnreadCount = async (user: string, userFriend: string): Promise<{status: boolean, unreadCount: number}> => {
     try {
-        const unreadMessageList: { _id: [string, string]; unread: number }[] = await userModel.aggregate([
-            { $match: { "chatHistory.read": false, users: { $all: [user, userFriend] } } },
+        const unreadMessageList: { _id: [string, string]; unread: number }[] = await chatModel.aggregate([
+            { $match: { "chatHistory.read": false, users: { $all: [userFriend, user] } } },
             { $group: { _id: "$users", chatHistory: { $first: "$chatHistory" } } },
             {
                 $project: {
@@ -140,26 +152,47 @@ export const updateUnReadCount = async (user: string, userFriend: string): Promi
                             $filter: {
                                 input: "$chatHistory",
                                 as: "e",
-                                cond: { $eq: ["$$e.read", false] }
+                                cond: { $and: [{$eq: ["$$e.read", false]}, {$eq: ["$$e.sender", user]}] }
                             }
                         }
                     }
                 }
             }
         ])
-        if (unreadMessageList[0]?.unread !== 0) {
+        // if (unreadMessageList[0]?.unread !== 0) {
+        //     try {
+        //         await userModel.updateOne({ usersName: user, "chatFriendsList.name": userFriend }, { $set: { 'chatFriendsList.$.unread': unreadMessageList[0]?.unread } })
+        //         return true
+        //     } catch (error) {
+        //         console.log(error)
+        //         return false
+        //     }
+        // }
+        console.log("getting unread count", unreadMessageList[0]?.unread)
+        return {status: true, unreadCount: unreadMessageList[0]?.unread as number}
+    } catch (error) {
+        console.log(error)
+        return {status: false, unreadCount: 0}
+    }
+}
+
+export const updateUnReadCount = async (user: string, userFriend: string): Promise<boolean> => {
+    try {
+        const unReadMsgsCount: {status: boolean, unreadCount: number} = await getUnreadCount(user, userFriend)
+        if (unReadMsgsCount?.status) {
             try {
-                await userModel.updateOne({ usersName: user, "chatFriendsList.name": userFriend }, { $set: { 'chatFriendsList.$.unread': unreadMessageList[0]?.unread } })
+                await userModel.updateOne({ usersName: userFriend, "chatFriendsList.name": user }, { $set: { 'chatFriendsList.$[].unread': unReadMsgsCount?.unreadCount } })
+                console.log("updating unread count", unReadMsgsCount.unreadCount)
                 return true
             } catch (error) {
                 console.log(error)
                 return false
             }
         }
-
         return true
     } catch (error) {
         console.log(error)
         return false
     }
 }
+

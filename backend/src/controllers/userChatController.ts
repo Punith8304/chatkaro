@@ -23,11 +23,11 @@ export const getChatHistory = async (req: Request, res: Response) => {
         const chatHistory: chatMessage[] | { failedFetchMessages?: boolean } = await getChat({ sender, receiver, start, end })
         console.log(chatHistory, "chat history")
         if (!Array.isArray(chatHistory)) {
-            if (chatHistory.failedFetchMessages) {
+            if ("failedFetchMessages" in chatHistory) {
                 throw new Error("Failed to fetch messages")
             }
         }
-        res.json({ messages: chatHistory, status: true })
+        res.json({ messages: chatHistory ? chatHistory : [], status: true })
     } catch (error) {
         console.log(error)
         res.json({ status: 400, messages: [], fetched: false })
@@ -38,14 +38,14 @@ export const sendMessageToUser = async (req: Request, res: Response) => {
     const receiver: string = req.params.userName!
     const { sender, message } = req.body;
     try {
-        const addToFriends = await addToFriendsList({ sender, receiver })
-        if (!addToFriends) {
-            throw new Error("Adding to friends failed")
-        }
+        // const addToFriends = await addToFriendsList({ sender, receiver })
+        // if (!addToFriends) {
+        //     throw new Error("Adding to friends failed")
+        // }
         const messageSend: boolean = await sendMessage({ sender, receiver, message })
         const chatListModify = await changeChatList(receiver, sender)
         if (!messageSend) {
-            res.json({ status: 400, message: "message sending failed" })
+            return res.json({ status: 400, message: "message sending failed" })
         }
         res.json({ status: 200, message: "message sent successfully", modifiedChatList: chatListModify.friendsList })
     } catch (error) {
@@ -62,7 +62,7 @@ export const getFriendsList = async (req: Request, res: Response) => {
         const friendsList: { success: boolean; friendsList: userModelFriendListType[] } = await getUserFriendsList(user);
         console.log(friendsList)
         if (friendsList.success) {
-            res.json({ friendsList: friendsList.friendsList, fetched: true })
+            return res.json({ friendsList: friendsList.friendsList, fetched: true })
         }
         res.json({ friendsList: [], fetched: false })
     } catch (error) {
