@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { sendMessageToUser, getChatHistory, getFriendsList, getSearchQueryUsersList } from "../controllers/userChatController.js"
-import {  } from "../controllers/userChatController.js";
+
 
 
 const router = Router()

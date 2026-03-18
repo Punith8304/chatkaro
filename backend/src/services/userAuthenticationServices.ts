@@ -69,3 +69,23 @@ export const checkUser = async (userEmail: string, userPassword?: string, userNa
 }
 
 
+export const updateSocketID = async (id: string, userName: string) => {
+    try {
+        await userModel.updateOne({ userName: userName }, { socketID: id })
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export const getSocketID = async (userName: string): Promise<string | false> => {
+    try {
+        const user = await userModel.find({userName: userName})
+        return user[0]?.socketID as string
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
