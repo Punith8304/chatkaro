@@ -4,7 +4,7 @@ import { loginController, signUpController, checkAuthentication } from "../contr
 
 const router = Router()
 
-router.post("/login", loginController) //{userEmail, userPassword}
+router.post("/login", loginController) //{userName, userPassword}
 router.post("/sign-up", signUpController) //{userEmail, userPassword, userName}
 router.get("/check-authentication", checkAuthentication) //session {userName, login}
 

@@ -1,4 +1,4 @@
-import { configureStore, Store } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import apiReducer from "./api/apiSlice"
 import LoginReducer from "./user/userSlice"
 

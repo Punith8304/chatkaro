@@ -12,7 +12,6 @@ export type userAunthenticationReturnType = {
     userExists?: boolean;
     userLogged?: boolean;
     user?: {
-        userEmail: string,
         userName: string
     }
 }
@@ -33,11 +32,11 @@ export const createUser = async (userName: string, userHashedPassword: string, u
 
 
 
-export const checkUser = async (userEmail: string, userPassword?: string, userName?: string): Promise<userAunthenticationReturnType> => {
+export const checkUser = async (userName: string, userPassword?: string, userEmail?: string): Promise<userAunthenticationReturnType> => {
     try {
-        const userResult: userType | null = await userModel.findOne({ userEmail })
-        if (userName) {
-            const userNameSearchResult: userType | null = await userModel.findOne({ userName })
+        const userResult: userType | null = await userModel.findOne({ userName })
+        if (userEmail) {
+            const userNameSearchResult: userType | null = await userModel.findOne({ userEmail })
             return {
                 userExists: !!userNameSearchResult
             }
@@ -52,7 +51,6 @@ export const checkUser = async (userEmail: string, userPassword?: string, userNa
                 userExists: true,
                 userLogged: isPasswordValid,
                 user: {
-                    userEmail: userResult.userEmail,
                     userName: userResult.userName
                 }
             }

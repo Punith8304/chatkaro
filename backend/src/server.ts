@@ -77,7 +77,6 @@ declare module "express-session" {
         user: {
             userName: string;
             login: boolean;
-            socketID: string
         }
     }
 }

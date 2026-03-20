@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node --watch dist/server.js",
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "tsc & node dist/server.js"
   },
   "keywords": [],
   "author": "",

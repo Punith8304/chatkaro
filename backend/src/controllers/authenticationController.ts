@@ -6,22 +6,21 @@ import { createHash } from "../utils/passwordEncryption.js";
 import { checkUser, createUser, type userAunthenticationReturnType } from "../services/userAuthenticationServices.js";
 
 interface UserLoginDetails {
-    userEmail: string;
+    userName: string;
     userPassword: string;
 }
 interface UserSignUpDetails extends UserLoginDetails {
-    userName: string
+    userEmail: string
 }
 
 
 
 export const loginController = async (req: Request, res: Response) => {
+    const { username: userName, password: userPassword } = req.body;
 
-    const userDetails: UserLoginDetails = req.body;
-    const { userEmail, userPassword } = userDetails;
-    console.log("login request received")
+
     try {
-        const userExists: userAunthenticationReturnType = await checkUser(userEmail, userPassword)
+        const userExists: userAunthenticationReturnType = await checkUser(userName, userPassword)
         if (userExists?.userLogged) {
             req.session.user = {
                 userName: userExists?.user?.userName as string,
@@ -29,9 +28,11 @@ export const loginController = async (req: Request, res: Response) => {
             }
         }
         res.json({ ...userExists, status: 200 })
+        // {userExists: false, status: 200} if no user
+        // {userExists: true, userLogged: true | false, user: userName} if user exists and after checking password
     } catch (error) {
         console.log(error)
-        res.json({ status: 400, error: error })
+        res.json({ status: 400, error: error, login: false })
     }
 
 }
@@ -62,10 +63,14 @@ export const signUpController = async (req: Request, res: Response) => {
 export const checkAuthentication = async (req: Request, res: Response) => {
     const user = req.session.user
     try {
-        res.json({status: 200, user: {login: true, userName: user?.userName}})
+        if (user) {
+            res.json({ status: 200, user: { login: true, userName: user?.userName } })
+        }
+        res.json({ status: 401, user: { login: false, userName: "" } })
+
     } catch (error) {
         console.log(error)
-        res.json({status: 400, user: {login: false, userName: ""}})
+        res.json({ status: 400, user: { login: false, userName: "" } })
     }
 }
 

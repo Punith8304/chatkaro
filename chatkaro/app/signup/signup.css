@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500&family=Ubuntu+Mono&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #2c001e;
+    font-family: "Ubuntu", sans-serif;
+    color: white;
+    min-height: 100dvh;
+}
+
+/* ---------- POSITION (-1,0) ---------- */
+.signup-container {
+    position: absolute;
+    top: 50dvh;
+    left: 50vw;
+
+    /* (-1,0) + small upward shift */
+    transform:
+        translate(-50%, -50%) translate(-25vw, -5dvh);
+
+    width: max-content;
+}
+
+/* Ubuntu styling */
+
+.signup-header h1 {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+
+.signup-header p {
+    color: #cfcfcf;
+    margin-bottom: 28px;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #ddd;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-group input {
+    width: 280px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #e95420;
+    padding: 8px 2px;
+    color: white;
+    outline: none;
+    font-family: "Ubuntu Mono", monospace;
+}
+
+.form-group input:focus {
+    border-bottom-color: #ff8f5a;
+}
+
+.signup-button {
+    padding: 10px;
+    margin-top: 10px;
+    background: linear-gradient(135deg, #e95420, #77216f);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition:
+        transform 0.08s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
+}
+
+.login-link {
+    margin-top: 18px;
+    display: inline-block;
+    color: #ff8f5a;
+    text-decoration: none;
+}
+
+.signup-error-message {
+    width: var(--form-width);
+
+    color: #ffb4a2;
+    background: rgba(233, 84, 32, 0.12);
+
+    border-left: 3px solid #e95420;
+    border-radius: 4px;
+
+    padding: 8px 10px;
+    margin-top: -8px;
+    /* pulls closer to inputs */
+    margin-bottom: 6px;
+
+    font-size: 13px;
+    font-family: "Ubuntu Mono", monospace;
+
+    letter-spacing: 0.3px;
+
+    /* subtle ubuntu feel */
+    backdrop-filter: blur(2px);
+
+    animation: errorFade 0.25s ease-out;
+}
+
+.signup-button:hover {
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.06)),
+        linear-gradient(135deg, #e95420, #77216f);
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.28);
+    transform: translateY(-1px);
+}
+
+.signup-button:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12)),
+        linear-gradient(135deg, #e95420, #77216f);
+}
+.signup-button:focus-visible {
+    outline: none;
+    border-color: #7e57c2;
+    box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.35);
+}
+/* small entrance animation */
+@keyframes errorFade {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .signup-container {
+        position: static;
+        transform: none;
+        margin: 60px auto;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .form-group input,
+    .signup-button {
+        width: min(85vw, 320px);
+    }
+}
