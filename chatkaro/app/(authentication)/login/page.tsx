@@ -54,7 +54,7 @@ export default function Login() {
                 })
             } else {
                 dispatch(changeLogin({login: true, userName: result.data.user.userName}))
-                router.push("/chat")
+                router.replace("/chat")
             }
 
         })

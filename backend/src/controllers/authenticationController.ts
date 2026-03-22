@@ -62,9 +62,11 @@ export const signUpController = async (req: Request, res: Response) => {
 
 export const checkAuthentication = async (req: Request, res: Response) => {
     const user = req.session.user
+    console.log(user)
+    
     try {
         if (user) {
-            res.json({ status: 200, user: { login: true, userName: user?.userName } })
+            return res.json({ status: 200, user: { login: true, userName: user?.userName } })
         }
         res.json({ status: 401, user: { login: false, userName: "" } })
 

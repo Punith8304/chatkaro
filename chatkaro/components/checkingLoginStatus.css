@@ -14,7 +14,6 @@
 
 /* slightly left (-1,0 feel) */
 .auth-loading-box {
-  transform: translateX(-8vw);
 
   width: 340px;
   padding: 34px 32px;

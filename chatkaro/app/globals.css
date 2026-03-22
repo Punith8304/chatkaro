@@ -16,7 +16,7 @@
 
 /* ---------- ROOT VARIABLES ---------- */
 
-:root {
+/* :root {
   --ubuntu-bg: #2c001e;
   --ubuntu-orange: #e95420;
   --ubuntu-orange-hover: #ff6a33;
@@ -25,8 +25,17 @@
   --ubuntu-border: #ff8f5a;
 
   --form-width: 280px;
+} */
+:root {
+  --bg-sidebar: #1c1c1c;
+  --bg-header: #333333;
+  --term-green: #4af626;
+  --term-blue: #3465a4;
+  --term-gray: #888a85;
+  --term-text: #eeeeec;
+  --highlight-bg: #2e3436;
+  --font-mono: 'Ubuntu Mono', 'JetBrains Mono', 'Fira Code', monospace;
 }
-
 /* ---------- PAGE BASE ---------- */
 
 html,
@@ -37,7 +46,8 @@ body {
 body {
   min-height: 100dvh;
   /* fixes browser tab cutting */
-  background: var(--ubuntu-bg);
+  /* background: var(--ubuntu-bg); */
+  background: radial-gradient(circle at center, #1b1b1b, #0f0f0f);
   color: var(--ubuntu-text);
 
   font-family: "Ubuntu", sans-serif;
@@ -45,6 +55,13 @@ body {
 
   position: relative;
   overflow-x: hidden;
+  /* body {
+    background: radial-gradient(circle at center, #1b1b1b, #0f0f0f);
+    font-family: "Ubuntu", sans-serif;
+    color: white;
+    min-height: 100dvh;
+} */
+
 }
 
 /* Optional subtle ubuntu gradient */

@@ -124,7 +124,6 @@ export const searchFriends = async (searchQuery: string): Promise<{ fetched: boo
             {
                 userName: 1,
                 _id: 0
-
             })
         console.log("getting search query friends list")
         if (!searchFriendsResult) {

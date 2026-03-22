@@ -4,28 +4,27 @@ import { useRouter } from "next/navigation"
 import { useEffect, useLayoutEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { loginUser } from "@/lib/user/userSlice"
-import {type RootState, type AppDispatch} from "../lib/store"
+import { type RootState, type AppDispatch } from "../lib/store"
+import AuthLoading from "@/components/checkingLoginStatus"
 
 export default function Home() {
-  const router = useRouter()
-  const login = useSelector((state: RootState) => state.userLogin.login)
+  const { login, checkingStatus } = useSelector((state: RootState) => state.userLogin)
   const dispatch = useDispatch<AppDispatch>()
-  useLayoutEffect(() => {
-    
-    if (login) {
-      router.push("/chat")
-    } else {
-      router.push("/login")
-    }
-  }, [login])
-
+  const router = useRouter()
   useEffect(() => {
-    // Check if user has a session ID (meaning they're logged in)
-    dispatch(loginUser())
-  }, [])
-  return (
-    <div>
-      Redirecting...
-    </div>
-  )
+    if (!login && checkingStatus === "idle") {
+      dispatch(loginUser())
+    }
+  }, [dispatch])
+  useEffect(() => {
+    if (!login && checkingStatus === "success") {
+      router.replace("/login")
+    } else if(login && checkingStatus === "success") {
+      router.replace("/chat")
+    }
+  }, [checkingStatus, login])
+  
+    return (
+      <AuthLoading />
+    )
 }

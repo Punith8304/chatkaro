@@ -1,10 +1,13 @@
 "use client"
 
 import { type Metadata } from "next";
-import { Provider } from "react-redux";
-import { store } from "@/lib/store";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { store, RootState, AppDispatch } from "@/lib/store";
 import "./globals.css";
-import { Suspense } from "react";
+import AuthGaurd from "@/components/AuthProtection"
+import { useEffect } from "react";
+import { loginUser } from "@/lib/user/userSlice";
+import { useRouter } from "next/navigation";
 
 
 const metadata: Metadata = {
@@ -17,10 +20,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en">
       <body>
-        <Provider store={store}>{children}</Provider>
+        <Provider store={store}>
+          {children}
+        </Provider>
       </body>
     </html>
   );
