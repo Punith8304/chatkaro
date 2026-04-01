@@ -46,7 +46,7 @@ export default function ChatArea({ params }: { params: Promise<{ username: strin
       startTransition(() => {
         socketObj.onMessage(sendingMessage, username);
         setMessages(prev => {
-          return [...prev, { sender: user, text: sendingMessage, time: new Date().toLocaleDateString("en-IN"), type: "sent" }]
+          return [...prev, { sender: user, text: sendingMessage, time: new Date().toLocaleDateString("en-GB", {timeZone: "Asia/Kolkata"}), type: "sent" }]
         })
         if (changeFriendsList.current) {
           socketObj.updateFriendsList()
@@ -102,9 +102,9 @@ export default function ChatArea({ params }: { params: Promise<{ username: strin
 
 
   const checkConnection: messagesType[] = [
-    { sender: user, text: "ssh establish --node-77", time: new Date().toLocaleDateString("eb-GB", { timeZone: "Asia/Kolkata" }).replaceAll("/", "-"), type: "sent" },
-    { sender: username, text: "Connection accepted. Handshake 0xCC4. How can I help?", time: new Date().toLocaleDateString("eb-GB", { timeZone: "Asia/Kolkata" }).replaceAll("/", "-"), type: "received" },
-    { sender: user, text: "grep --source 'ProductFinder' error logs", time: new Date().toLocaleDateString("eb-GB", { timeZone: "Asia/Kolkata" }).replaceAll("/", "-"), type: "sent" },
+    { sender: user, text: "ssh establish --node-77", time: new Date().toLocaleDateString("en-GB", {timeZone: "Asia/Kolkata"}).replaceAll("/", "-"), type: "sent" },
+    { sender: username, text: "Connection accepted. Handshake 0xCC4. How can I help?", time: new Date().toLocaleDateString("en-GB", { timeZone: "Asia/Kolkata" }).replaceAll("/", "-"), type: "received" },
+    { sender: user, text: "grep --source 'ProductFinder' error logs", time: new Date().toLocaleDateString("en-GB", { timeZone: "Asia/Kolkata" }).replaceAll("/", "-"), type: "sent" },
   ];
 
   if (user === username) {

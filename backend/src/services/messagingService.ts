@@ -33,7 +33,7 @@ export const sendMessage = async ({ sender, receiver, message }: msgDetailsType)
                 chatHistory: [{
                     sender: sender,
                     message: message,
-                    date: new Date().toLocaleDateString("en-IN")
+                    date: new Date().toLocaleDateString("en-GB", {timeZone: "Asia/Kolkata"})
                 }]
             })
             // console.log({ section: "sending messages", status: true })

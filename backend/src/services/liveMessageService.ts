@@ -20,7 +20,7 @@ const connectionCB = (socket: Socket) => {
                 content,
                 from: sender,
                 to,
-                date: new Date().toLocaleDateString("en-IN")
+                date: new Date().toLocaleDateString("en-GB", {timeZone: "Asia/Kolkata"})
             }); 
         })()
     })
