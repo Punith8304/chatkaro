@@ -140,7 +140,7 @@ export default function TerminalSidebar() {
             <div
               key={i}
               className={`user-item ${pathname === `/chat/${user.userName}` ? "active" : ""}`}
-              onClick={() => { router.replace(user.userName) }}
+              onClick={() => { router.replace(`/chat/${user.userName}`) }}
             >
               <span className="chevron dimmed">❯</span>
               <span className="file-name">{user.userName}</span>
