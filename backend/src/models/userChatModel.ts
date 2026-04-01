@@ -7,10 +7,7 @@ const chatSchema = new mongoose.Schema({
         type: [{
             sender: String,
             message: String,
-            timeStamp: {
-                type: Date,
-                default: Date.now
-            },
+            date: String,
             read: {
                 type: Boolean,
                 default: false

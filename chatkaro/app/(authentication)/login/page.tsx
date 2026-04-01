@@ -4,7 +4,7 @@ import Link from 'next/link';
 import './login.css';
 import React, { useTransition, useState, useEffect, FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from "../../lib/store";
+import { AppDispatch, RootState } from "@/lib/store";
 import { useRouter } from 'next/navigation';
 import axios from "axios";
 import { changeLogin, loginUser } from '@/lib/user/userSlice';
@@ -29,7 +29,7 @@ export default function Login() {
     const controller = new AbortController()
     let anyAPIRunning = false
     // useEffect(() => {
-        
+
     //     if (login) {
     //         router.push("/chat")
     //     }
@@ -47,13 +47,18 @@ export default function Login() {
             anyAPIRunning = true
             const result = await axios.post(`${api}/authentication/login`, loginDetails, { signal: controller.signal, withCredentials: true })
             console.log(result.data)
-            if (!result.data.userExists || !result.data.userLogged) {
+            if (!result.data.userExists) {
                 setError({
                     isError: true,
-                    errorMessage: "Invalid username or password"
+                    errorMessage: "No user found"
+                })
+            } else if( !result.data.userLogged) {
+                setError({
+                    isError: true,
+                    errorMessage: "Password incorrect"
                 })
             } else {
-                dispatch(changeLogin({login: true, userName: result.data.user.userName}))
+                dispatch(changeLogin({ login: true, userName: result.data.user.userName }))
                 router.replace("/chat")
             }
 
@@ -70,50 +75,55 @@ export default function Login() {
         })
     }
     return (
-        <div className="login-container">
-            <div className="login-content">
-                <div className="login-header">
-                    <h1>Sign In</h1>
+        <div className="login-positioner">
+            <div className="terminal-auth-flow">
+                <div className="cli-header">
+                    <span className="user-prefix">root@chatkaro:</span>
+                    <span className="path">~</span>
+                    <span className="prompt-char">#</span>
+                    <span className="command"> sudo auth --login</span>
                 </div>
 
-                <form action="post" className="login-form" onSubmit={handleLoginForm}>
-                    <div className="form-group">
-                        <label htmlFor="username">Username</label>
+                <form className="cli-form" onSubmit={handleLoginForm}>
+                    <div className="input-row">
+                        <span className="label">USERNAME:</span>
                         <input
                             type="text"
-                            id="username"
                             name="username"
+                            placeholder="guest_user"
                             onChange={handleChange}
-                            placeholder="Enter your username"
-                            value={loginDetails.username}
                             required
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
+                    <div className="input-row">
+                        <span className="label">PASSWORD:</span>
                         <input
                             type="password"
-                            id="password"
                             name="password"
+                            placeholder="********"
                             onChange={handleChange}
-                            placeholder="Enter your password"
-                            value={loginDetails.password}
                             required
                         />
                     </div>
 
+                    {/* ERROR RENDERING SLOT */}
+                    {error.isError && (
+                        <div className="terminal-error">
+                            <span className="error-prefix">[FATAL]:</span>
+                            {error.errorMessage || "AUTHENTICATION_FAILURE_0x04"}
+                        </div>
+                    )}
 
-                    <div>
-                        {error.isError ? <p className='error-message'>{error.errorMessage}</p> : null}
-
-                        <button type="submit" className="login-button">
-                            {isPending ? "Signing in" : "Sign In"}
-                        </button>
-                    </div>
+                    <button type="submit">
+                        {isPending ? "STATUS: EXECUTING..." : "EXECUTE_AUTH"}
+                    </button>
                 </form>
 
-                <Link href="/signup" className="signup-link">Don't have an account? Sign up</Link>
+                <div className="cli-footer">
+                    <span className="dimmed">No account found?</span>
+                    <Link href="/signup" className="link"> ./create-node.sh</Link>
+                </div>
             </div>
         </div>
     );

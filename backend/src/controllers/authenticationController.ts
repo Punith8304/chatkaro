@@ -38,13 +38,12 @@ export const loginController = async (req: Request, res: Response) => {
 }
 
 export const signUpController = async (req: Request, res: Response) => {
-    const UserDetails: UserSignUpDetails = req.body;
-    const { userEmail, userPassword, userName } = UserDetails
+    const { useremail: userEmail, password: userPassword, username: userName } = req.body
     console.log("signup request received")
     try {
-        const checkingUser: userAunthenticationReturnType = await checkUser(userEmail, userName)
+        const checkingUser: userAunthenticationReturnType = await checkUser(userName, userPassword, userEmail)
         if (checkingUser.userExists) {
-            return res.json({ status: 400, userExists: true, userEmail, userName })
+            return res.json({ status: 400, userExists: true, userName })
         }
         const createdHash: string = await createHash(userPassword);
         await createUser(userName, createdHash, userEmail)
@@ -52,19 +51,21 @@ export const signUpController = async (req: Request, res: Response) => {
             userName: userName,
             login: true
         }
-        res.json({ status: 200, createdUser: { userName, userEmail } })
+        res.json({ status: 200, userLogged: true, createdUser: { userName } })
+
+        // if user exists {status: 400, userExists: true, userName}
+        // if successful {status: 200, login: true, createdUser: {userName}}
     } catch (error) {
         console.log(error)
-        res.json({ status: 400, error: error })
+        res.json({ status: 400, userLogged: false, error: error })
     }
 }
 
 
 export const checkAuthentication = async (req: Request, res: Response) => {
     const user = req.session.user
-    console.log(user)
-    
     try {
+        console.log(user)
         if (user) {
             return res.json({ status: 200, user: { login: true, userName: user?.userName } })
         }

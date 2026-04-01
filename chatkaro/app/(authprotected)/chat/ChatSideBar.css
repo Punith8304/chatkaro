@@ -106,7 +106,9 @@
   gap: 10px;
   cursor: pointer;
   font-size: 13px;
-  transition: all 0.1s;
+  /* --- ADD TRANSITION HERE --- */
+  transition: background-color 0.2s ease, border-left 0.2s ease, padding-left 0.2s ease;
+  border-left: 3px solid transparent; /* Prevents shifting when active */
 }
 
 .chevron {
@@ -138,4 +140,117 @@
   justify-content: space-between;
   color: var(--term-gray);
   border-top: 1px solid #000;
+}
+
+
+.file-name {
+  /* --- ADD TRANSITION HERE --- */
+  transition: color 0.2s ease;
+}
+/* 1. The Row Hover Background */
+.user-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+}
+
+/* 2. The Name Hover (Green + Underline) */
+.user-item:hover .file-name {
+  color: var(--term-green);
+  text-decoration: underline;
+}
+
+/* 3. Ensure the Hover doesn't override your Active/Selected design */
+.user-item.active:hover .file-name {
+  text-decoration: none; /* Keeps the selected one clean */
+  color: #fff;           /* Keeps the selected one white */
+}
+
+
+
+
+
+
+
+
+
+
+
+/* --- SEARCH RESULTS STYLING --- */
+
+.search-results-group {
+  background: rgba(0, 255, 0, 0.02); /* Very faint green tint to distinguish search */
+}
+
+.search-results-limit {
+  max-height: 200px; /* Limits view to ~5 members before internal scroll */
+  overflow-y: auto;
+  border-bottom: 1px dashed rgba(0, 255, 0, 0.2);
+  margin-bottom: 10px;
+}
+
+.chevron.highlight {
+  color: #fff;
+  text-shadow: 0 0 5px var(--term-green);
+}
+
+.search-match .file-name {
+  color: var(--term-blue); /* Search matches appear blue like executable files */
+}
+
+.search-divider {
+  height: 1px;
+  margin: 10px 15px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--term-green),
+    var(--term-green) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  opacity: 0.3;
+}
+
+/* Custom scrollbar for just the search results sub-box */
+.search-results-limit::-webkit-scrollbar {
+  width: 3px;
+}
+.search-results-limit::-webkit-scrollbar-thumb {
+  background: var(--term-green);
+}
+
+
+
+
+.search-clear-btn {
+  background: #333; /* Dark gray circle background */
+  border: none;
+  color: #fff; /* Brighter color for better visibility */
+  cursor: pointer;
+  font-size: 14px;
+  
+  /* Make it a small, tight circle */
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  
+  /* Centers the '×' perfectly */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  padding: 0;
+  flex-shrink: 0; /* Prevents the button from squishing */
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.search-clear-btn:hover {
+  background: var(--term-green); /* Button turns green on hover */
+  color: #000; /* '×' turns black for contrast */
+  opacity: 1;
+  transform: rotate(90deg); /* Cool terminal rotation effect */
+}
+
+.search-clear-btn:active {
+  transform: scale(0.9);
 }

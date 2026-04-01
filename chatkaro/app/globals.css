@@ -1,222 +1,101 @@
-/* ================================
-   UBUNTU GLOBAL THEME
-================================ */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Ubuntu+Mono:wght@400;500&display=swap');
-
-/* ---------- RESET ---------- */
-
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* ---------- ROOT VARIABLES ---------- */
-
-/* :root {
-  --ubuntu-bg: #2c001e;
-  --ubuntu-orange: #e95420;
-  --ubuntu-orange-hover: #ff6a33;
-  --ubuntu-text: #ffffff;
-  --ubuntu-muted: #cfcfcf;
-  --ubuntu-border: #ff8f5a;
-
-  --form-width: 280px;
-} */
 :root {
-  --bg-sidebar: #1c1c1c;
-  --bg-header: #333333;
+  --bg-dark: #0c0c0c;
   --term-green: #4af626;
   --term-blue: #3465a4;
-  --term-gray: #888a85;
+  --term-red: #ef4444;
+  --term-gray: #555753;
   --term-text: #eeeeec;
-  --highlight-bg: #2e3436;
-  --font-mono: 'Ubuntu Mono', 'JetBrains Mono', 'Fira Code', monospace;
-}
-/* ---------- PAGE BASE ---------- */
-
-html,
-body {
-  height: 100%;
+  --font-mono: 'Ubuntu Mono', monospace;
+  --form-width: 300px;
 }
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  min-height: 100dvh;
-  /* fixes browser tab cutting */
-  /* background: var(--ubuntu-bg); */
-  background: radial-gradient(circle at center, #1b1b1b, #0f0f0f);
-  color: var(--ubuntu-text);
-
-  font-family: "Ubuntu", sans-serif;
-  line-height: 1.5;
-
+  background: var(--bg-dark);
+  color: var(--term-text);
+  font-family: var(--font-mono);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
   position: relative;
-  overflow-x: hidden;
-  /* body {
-    background: radial-gradient(circle at center, #1b1b1b, #0f0f0f);
-    font-family: "Ubuntu", sans-serif;
-    color: white;
-    min-height: 100dvh;
-} */
-
 }
 
-/* Optional subtle ubuntu gradient */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(233, 84, 32, 0.08), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(255, 106, 51, 0.06), transparent 40%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* ---------- LINKS ---------- */
-
-a {
-  color: var(--ubuntu-border);
-  text-decoration: none;
-  transition: 0.2s ease;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* ---------- HEADINGS ---------- */
-
-h1,
-h2,
-h3 {
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* ---------- FORM LAYOUT ---------- */
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  font-size: 14px;
-  color: #ddd;
-  margin-bottom: 6px;
-}
-
-/* ---------- UBUNTU INPUT STYLE ---------- */
-
-input {
-  width: var(--form-width);
-
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid var(--ubuntu-orange);
-
-  padding: 8px 2px;
-  color: white;
-
-  outline: none;
-
-  font-family: "Ubuntu Mono", monospace;
-  font-size: 15px;
-
-  transition: border-color 0.2s ease;
-}
-
-input::placeholder {
-  color: #9e9e9e;
-}
-
-input:focus {
-  border-bottom-color: var(--ubuntu-border);
-}
-
-/* ---------- BUTTON ---------- */
-
-button {
-  width: var(--form-width);
-  padding: 10px;
-
-  background: var(--ubuntu-orange);
-  border: none;
-  border-radius: 4px;
-
-  color: white;
-  font-size: 15px;
-  font-family: "Ubuntu", sans-serif;
-
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-
-
-/* ---------- UTILITY CENTER CLASS ---------- */
-/* optional reusable center helper */
-
-.center-screen {
-  position: absolute;
-  top: 50dvh;
-  left: 50vw;
-  transform: translate(-50%, -50%);
-}
-
-/* ---------- SCROLLBAR (Ubuntu-like) ---------- */
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1e0014;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--ubuntu-orange);
-  border-radius: 10px;
-}
-
-/* ---------- MOBILE ---------- */
-
-@media (max-width: 768px) {
-
-  body {
-    padding: 20px 12px;
-  }
-
-  input,
-  button {
-    width: min(85vw, 320px);
-  }
-}
-
-/* ==============================
-   FIX CHROME AUTOFILL (UBUNTU DARK)
-============================== */
-
-/* Chrome autofill fix */
+/* =========================================
+   THE INVISIBLE AUTOFILL FIX
+   ========================================= */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
-  box-shadow: 0 0 0px 1000px transparent inset !important;
-
-  -webkit-text-fill-color: #e6e6e6 !important;
-  caret-color: #e6e6e6;
-
-  transition: background-color 9999s ease-in-out 0s;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--term-green) !important;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 20px 20px var(--bg-dark) !important;
 }
+
+/* Input Base Style - No Card, Just CLI feel */
+input {
+  width: var(--form-width);
+  background: transparent !important;
+  border: none;
+  border-bottom: 2px solid var(--term-gray);
+  padding: 12px 2px;
+  color: var(--term-green);
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-bottom-color: var(--term-green);
+}
+
+button {
+  width: var(--form-width);
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--term-green);
+  color: var(--term-green);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+button:hover {
+  background: rgba(74, 246, 38, 0.1);
+  box-shadow: 0 0 10px var(--term-green);
+}
+/* --- System Error Styling --- */
+.terminal-error {
+  width: var(--form-width);
+  color: var(--term-red);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  margin-top: 15px;
+  padding: 10px;
+  border-left: 2px solid var(--term-red);
+  background: rgba(239, 68, 68, 0.05);
+  animation: error-flicker 0.3s ease-in-out;
+}
+
+.error-prefix {
+  font-weight: bold;
+  margin-right: 8px;
+  text-transform: uppercase;
+}
+
+@keyframes error-flicker {
+  0% { opacity: 0.5; transform: translateX(-4px); }
+  50% { opacity: 1; transform: translateX(4px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+

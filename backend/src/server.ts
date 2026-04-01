@@ -44,9 +44,11 @@ const server = createServer(app)
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+        // transports: ['websocket', 'polling'],
         credentials: true
-    }
-
+    },
+    allowEIO3: true
 })
 
 
@@ -64,8 +66,9 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: store,
+    rolling: true,
     cookie: {
-        maxAge: 60 * 1000 * 10,
+        maxAge: 60 * 1000 * 60 * 24 * 10,
         httpOnly: true,
         secure: false
     }

@@ -27,7 +27,7 @@ export default function ({ children, pathType }: {
         if (login && checkingStatus === "success" && pathType === "login") {
             router.replace("/chat")
         }
-    }, [login, checkingStatus, router])
+    }, [login, checkingStatus])
     if (checkingStatus === "idle" || checkingStatus === "loading" || (!login && pathType !== "login") || (login && pathType === "login")) {
         return <AuthLoading />
     }

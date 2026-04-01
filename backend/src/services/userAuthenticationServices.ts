@@ -36,9 +36,9 @@ export const checkUser = async (userName: string, userPassword?: string, userEma
     try {
         const userResult: userType | null = await userModel.findOne({ userName })
         if (userEmail) {
-            const userNameSearchResult: userType | null = await userModel.findOne({ userEmail })
+            const userEmailSearchResult: userType | null = await userModel.findOne({ userEmail })
             return {
-                userExists: !!userNameSearchResult
+                userExists: !!userEmailSearchResult || !!userResult
             }
         }
         if (!userResult) {
@@ -58,8 +58,6 @@ export const checkUser = async (userName: string, userPassword?: string, userEma
         return {
             userExists: true
         }
-
-
     } catch (error) {
         console.log(error)
         throw new Error("user checking error")
@@ -79,7 +77,7 @@ export const updateSocketID = async (id: string, userName: string) => {
 
 export const getSocketID = async (userName: string): Promise<string | false> => {
     try {
-        const user = await userModel.find({userName: userName})
+        const user = await userModel.find({ userName: userName })
         return user[0]?.socketID as string
     } catch (error) {
         console.log(error)

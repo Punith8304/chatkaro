@@ -1,87 +1,178 @@
 "use client"
-import React, { useState } from "react";
-// import "./ChatPage.css";
+import React, { useState, use, FormEvent, useRef, startTransition, useEffect, useTransition } from "react";
+import { useSelector, UseSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { socket, socketObj } from "@/services/socketService"
+import "./ChatArea.css";
+import MessagesArea from "./MessageArea";
+import axios from "axios";
+import UserNotFound from "@/components/UserNotFound";
 
-export default function ChatWindow() {
-  const [messages, setMessages] = useState([
-    { role: "system", content: "Last login: Sun Mar 22 16:41:24 on ttys001" },
-    { role: "user", content: "ls -a projects" },
-    { role: "bot", content: "Fetching secure data... connection established." },
-  ]);
+export type gotMsgsDataType = {
+  sender: string,
+  message: string,
+  date: string,
+  // read: boolean,
+  // _id: string
+}
+export type messagesType = {
+  sender: string,
+  text: string,
+  time: string,
+  type: "received" | "sent"
+}
 
+export default function ChatArea({ params }: { params: Promise<{ username: string }> }) {
+  const loadedCountRef = useRef(0)
+  const changeFriendsList = useRef<boolean>(true)
+  const [isPending, startTransition] = useTransition()
+  const user = useSelector((state: RootState) => state.userLogin.userName)
+  const endpoint = useSelector((state: RootState) => state.api)
+  const messageRef = useRef<HTMLInputElement>(null)
+  const [messages, setMessages] = useState<messagesType[]>([])
+  const { username } = use(params)
+  // const [isLoadingPrevious, setIsLoadingPrevious] = useState(false);
+
+  // messaging through socket.io (emitting message event - private)
+
+
+
+  // emitting message event and updating in the state
+  function sendMessage(event: FormEvent<HTMLFormElement>) {
+    // console.log(changeFriendsList.current, "value of ref")
+    event.preventDefault()
+    if (messageRef.current?.value) {
+      let sendingMessage = messageRef.current.value
+      startTransition(() => {
+        socketObj.onMessage(sendingMessage, username);
+        setMessages(prev => {
+          return [...prev, { sender: user, text: sendingMessage, time: new Date().toLocaleDateString("en-IN"), type: "sent" }]
+        })
+        if (changeFriendsList.current) {
+          socketObj.updateFriendsList()
+          changeFriendsList.current = false
+        }
+      })
+      messageRef.current.value = ""
+    }
+  }
+
+  // listening from incoming data --messages
+
+  useEffect(() => {
+    // console.log("re-render")
+    (async function () {
+      await getPreviousMsgs(loadedCountRef.current);
+    })();
+    socket.on("send-message", ({ content, from, to, date }: { content: string, from: string, to: string, date: string }) => {
+      console.log("received")
+      startTransition(() => {
+        if (from === username) {
+          setMessages(prev => {
+            return [...prev, { sender: from, text: content, time: date, type: "received" }]
+          })
+        } else {
+          socketObj.updateFriendsList()
+        }
+      })
+    })
+  }, [])
+
+  async function getPreviousMsgs(loadedMsgsCount: number) {
+    startTransition(async () => {
+      const loadMsgs = await axios.get(`${endpoint}/chat/get-chat/${username}?loadedMsgsCount=${loadedMsgsCount}`, { withCredentials: true })
+      const msgs = loadMsgs.data.messages.map((message: gotMsgsDataType) => {
+        return { sender: message.sender, text: message.message, time: message.date.replaceAll("/", "-"), type: message.sender === user ? "sent" : "received" }
+      })
+      // console.log(msgs)
+      setMessages(prev => [...msgs, ...prev]);
+
+      loadedCountRef.current += loadMsgs.data.messages.length
+    })
+  }
+  // function changechildState(cb: React.Dispatch<React.SetStateAction<messagesType[]>>) {
+  //   cb((prev: messagesType[]) => {
+  //     return [...prev,]
+  //   })
+  // }
+
+
+
+
+
+
+  const checkConnection: messagesType[] = [
+    { sender: user, text: "ssh establish --node-77", time: new Date().toLocaleDateString("eb-GB", { timeZone: "Asia/Kolkata" }).replaceAll("/", "-"), type: "sent" },
+    { sender: username, text: "Connection accepted. Handshake 0xCC4. How can I help?", time: new Date().toLocaleDateString("eb-GB", { timeZone: "Asia/Kolkata" }).replaceAll("/", "-"), type: "received" },
+    { sender: user, text: "grep --source 'ProductFinder' error logs", time: new Date().toLocaleDateString("eb-GB", { timeZone: "Asia/Kolkata" }).replaceAll("/", "-"), type: "sent" },
+  ];
+
+  if (user === username) {
+    return <UserNotFound searchTerm={user} />
+  }
   return (
-    <div className="terminal-container">
-      {/* Sidebar - Refined Linux Style */}
-      <aside className="sidebar">
-        <div className="sidebar-header">
-          <div className="window-dots">
-            <span className="dot red"></span>
-            <span className="dot yellow"></span>
-            <span className="dot green"></span>
+    <div className="chat-interface">
+      <header className="chat-header">
+        <span className="term-green">●</span>
+        <span className="connection-info"> CONNECTED: {username} [192.168.1.77]</span>
+        <span className="latency">LATENCY: 14ms</span>
+      </header>
+      <div className="message-stream">
+        {checkConnection.map((msg, i) => (
+          <div key={i} className={`log-entry ${msg.type}`}>
+            <span className="log-time">[{msg.time}]</span>
+            <span className="log-sender">{msg.sender}:</span>
+            <span className="log-text">{msg.text}</span>
           </div>
-          <h3>root@chat:~</h3>
-        </div>
-        
-        <div className="search-wrapper">
-          <span className="prompt-char">$</span>
-          <input type="text" placeholder="grep 'friend'..." />
-        </div>
-
-        <div className="sidebar-scroll">
-          <Section title="Active_Nodes">
-            <UserItem name="punit_dev" active />
-            <UserItem name="kernel_master" />
-          </Section>
-          <Section title="Nearby_Peers">
-            <UserItem name="guest_404" />
-          </Section>
-        </div>
-      </aside>
-
-      {/* Conversation Area */}
-      <main className="chat-area">
-        <div className="chat-header">
-          <span className="path">/home/user/conversations/punit_dev</span>
-        </div>
-
-        <div className="messages-container">
-          {messages.map((msg, i) => (
-            <div key={i} className={`message ${msg.role}`}>
-              <span className="msg-prefix">
-                {msg.role === "user" ? "user@ubuntu:~$" : "root@system:>"}
-              </span>
-              <span className="msg-content">{msg.content}</span>
+        ))}
+        {/* --- LOAD PREVIOUS SECTION --- */}
+        <div className="load-previous-container">
+          {isPending ? (
+            <div className="buffer-loading">
+              <span className="term-blue">[WAIT]</span>
+              <span className="loading-text"> fetching_history_buffer...</span>
+              <div className="loading-bar-mini"></div>
             </div>
-          ))}
-          <div className="typing-cursor">_</div>
+          ) : (
+            <button
+              className="load-prev-btn"
+              onClick={async () => await getPreviousMsgs(loadedCountRef.current)}
+            >
+              <span className="term-gray">---</span>
+              <span className="btn-text"> journalctl --load-previous </span>
+              <span className="term-gray">---</span>
+            </button>
+          )}
         </div>
 
-        <div className="input-area">
-          <span className="input-prompt">❯</span>
-          <input type="text" placeholder="Type a command..." autoFocus />
-        </div>
-      </main>
-    </div>
-  );
-}
+        {/* <MessagesArea changeState={changechildState} loadMessages={true} /> */}
+        {
+          messages.map((msg, i) => (
+            <div key={i} className={`log-entry ${msg.type}`}>
+              <span className="log-time">[{msg.time}]</span>
+              <span className="log-sender">{msg.sender}:</span>
+              <span className="log-text">{msg.text}</span>
+            </div>
+          ))
+        }
 
-// Sub-components for cleaner code
-function Section({ title, children }: {title: string, children: React.ReactNode}) {
-  return (
-    <div className="section">
-      <p className="section-title">[{title}]</p>
-      {children}
-    </div>
-  );
-}
 
-function UserItem({ name, active }: {
-  name: string, active?: Boolean
-}) {
-  return (
-    <div className={`user-item ${active ? "active" : ""}`}>
-      <span className="status-icon">{active ? "●" : "○"}</span>
-      {name}.sh
+        <div className="stream-end"></div>
+      </div>
+
+      <div className="chat-input-wrapper">
+        <form className="command-line-form" onSubmit={sendMessage}>
+          <span className="prompt-prefix">{`${user}`}@stdout:~$</span>
+          <input
+            ref={messageRef}
+            type="text"
+            placeholder="Type a message or command..."
+            autoComplete="off"
+            autoFocus
+          />
+          <button type="submit" className="hidden-btn">ENTER</button>
+        </form>
+      </div>
     </div>
   );
 }

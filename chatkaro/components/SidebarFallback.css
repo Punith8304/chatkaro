@@ -1,0 +1,96 @@
+/* =========================================
+   SIDEBAR FALLBACK (PROBE STYLE)
+   ========================================= */
+
+/* Ensure the fallback has the same base dimensions as your real sidebar */
+.terminal-sidebar.probe-active {
+  width: 340px; /* Matching your earlier refined width */
+  height: 100vh;
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid #000;
+  opacity: 0.8; /* Subtle transparency signals "Loading" */
+}
+
+.probe-content {
+  flex: 1;
+  padding: 30px 22px; /* Breathing room for the larger font */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.probe-line.active {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.probe-prompt {
+  color: var(--term-green);
+  font-weight: bold;
+  animation: probe-blink 1s infinite;
+}
+
+.probe-text {
+  color: var(--term-blue); /* Distinct "I/O Wait" blue */
+}
+
+/* ----- The Shimmer Lines ----- */
+.shimmer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.shimmer-line {
+  height: 2px;
+  width: 100%;
+  background: #1a1a1a;
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-line.dimmed {
+  width: 70%;
+  opacity: 0.5;
+}
+
+/* The scanning block that moves across the line */
+.shimmer-line::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 40%; height: 100%;
+  background: var(--term-blue);
+  box-shadow: 0 0 10px var(--term-blue);
+  animation: probe-scan 1.8s infinite linear;
+}
+
+/* Vary the second line speed slightly for realism */
+.shimmer-line.dimmed::after {
+  animation-duration: 2.2s;
+  background: var(--term-gray);
+  box-shadow: none;
+}
+
+/* ----- Footer and Status ----- */
+.probe-status {
+  margin-top: auto; /* Push to the bottom of the body area */
+  font-size: 11px;
+  color: var(--term-gray);
+  text-align: center;
+  border: 1px dashed #333;
+  padding: 8px;
+}
+
+/* ----- Animations ----- */
+@keyframes probe-scan {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(250%); }
+}
+
+@keyframes probe-blink {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

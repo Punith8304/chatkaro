@@ -1,7 +1,7 @@
 "use client"
 
 import { useSelector } from 'react-redux';
-import { RootState } from "../../lib/store"
+import { RootState } from "@/lib/store.ts"
 import { useLayoutEffect } from 'react';
 import { useRouter } from 'next/navigation';
 

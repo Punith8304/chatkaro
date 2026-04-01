@@ -1,0 +1,162 @@
+.chat-interface {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-dark);
+  height: 100vh;
+  font-family: var(--font-mono);
+}
+
+/* ----- HEADER ----- */
+.chat-header {
+  background: var(--bg-header);
+  padding: 12px 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid #000;
+}
+
+.connection-info { color: var(--term-text); font-weight: bold; }
+.latency { color: var(--term-gray); margin-left: auto; font-size: 11px; }
+
+/* ----- MESSAGE STREAM ----- */
+.message-stream {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.log-entry {
+  font-size: 16px; /* Matching your request for bigger font */
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.log-time { color: var(--term-gray); margin-right: 12px; font-size: 14px; }
+
+/* Styling for Sent vs Received */
+.log-entry.sent .log-sender { color: var(--term-green); font-weight: bold; margin-right: 8px; }
+.log-entry.received .log-sender { color: var(--term-blue); font-weight: bold; margin-right: 8px; }
+
+.log-text { color: var(--term-text); }
+
+/* ----- COMMAND INPUT ----- */
+.chat-input-wrapper {
+  background: #000;
+  padding: 15px 20px;
+  border-top: 1px solid var(--highlight-bg);
+}
+
+.command-line-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.prompt-prefix {
+  color: var(--term-green);
+  font-weight: bold;
+  white-space: nowrap;
+  font-size: 16px;
+}
+
+.command-line-form input {
+  flex: 1;
+  background: transparent;
+  border: none !important; /* Overriding global border-bottom */
+  color: var(--term-text);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  outline: none;
+}
+
+/* Making it look like a real cursor */
+.command-line-form input::placeholder {
+  color: #444;
+}
+
+.hidden-btn { display: none; }
+
+/* Scrollbar styling for the stream */
+.message-stream::-webkit-scrollbar { width: 6px; }
+.message-stream::-webkit-scrollbar-thumb {
+  background: var(--highlight-bg);
+}
+/* ----- LOAD PREVIOUS SECTION ----- */
+.load-previous-container {
+  display: flex;
+  justify-content: center;
+  padding: 15px 0;
+  margin-bottom: 10px;
+  border-bottom: 1px dashed #222;
+}
+
+.load-prev-btn {
+  background: transparent;
+  border: none;
+  color: var(--term-gray);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.load-prev-btn:hover {
+  color: var(--term-blue);
+}
+
+.load-prev-btn .btn-text {
+  margin: 0 10px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ----- BUFFER LOADING FALLBACK ----- */
+.buffer-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.loading-text {
+  font-size: 12px;
+  color: var(--term-blue);
+  letter-spacing: 1px;
+}
+
+.loading-bar-mini {
+  width: 120px;
+  height: 2px;
+  background: #111;
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-bar-mini::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 30%; height: 100%;
+  background: var(--term-blue);
+  box-shadow: 0 0 8px var(--term-blue);
+  animation: mini-scan 1s infinite linear;
+}
+
+@keyframes mini-scan {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+
+
+
+
+/* hovering effect css */
+
+
