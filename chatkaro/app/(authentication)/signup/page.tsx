@@ -45,7 +45,7 @@ export default function Signup() {
           errorMessage: "user already exists"
         })
       } else if (result.data.userLogged) {
-        await dispatch(changeLogin({ login: true, userName: result.data.createdUser.userName }))
+        dispatch(changeLogin({ login: true, userName: result.data.createdUser.userName, checkingStatus: "success" }))
         router.replace("/chat")
       } else {
         setError({

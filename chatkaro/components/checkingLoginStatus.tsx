@@ -13,7 +13,7 @@ export default function AuthLoading() {
 
         <div className="boot-body">
           <div className="boot-line">
-            <span className="term-gray">mount:</span> /dev/user_session on /home/punit
+            <span className="term-gray">mount:</span> /dev/user_session on /home/chatkaro
           </div>
           
           <div className="boot-line active">

@@ -254,3 +254,53 @@
 .search-clear-btn:active {
   transform: scale(0.9);
 }
+
+
+.terminal-logout-btn {
+  background: #333; /* Dark base for the button */
+  border: 1px solid #444;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.exit-icon {
+  color: #ef4444; /* Power icon stays red */
+  font-size: 12px;
+}
+
+.terminal-logout-btn:hover {
+  background: #ef4444; /* Turns fully red on hover */
+  border-color: #ff5f5f;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+.terminal-logout-btn:hover .exit-icon {
+  color: #fff; /* Icon turns white when button is red */
+}
+
+.terminal-logout-btn:active {
+  transform: scale(0.95);
+}
+
+/* Ensure footer has enough height for the button */
+.sidebar-footer {
+  min-height: 32px;
+  padding: 0 15px;
+  background: var(--bg-header);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #000;
+}

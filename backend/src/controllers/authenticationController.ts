@@ -4,6 +4,7 @@ import { createHash } from "../utils/passwordEncryption.js";
 
 
 import { checkUser, createUser, type userAunthenticationReturnType } from "../services/userAuthenticationServices.js";
+import { error } from "console";
 
 interface UserLoginDetails {
     userName: string;
@@ -77,3 +78,15 @@ export const checkAuthentication = async (req: Request, res: Response) => {
     }
 }
 
+
+export const logout = async (req: Request, res: Response) => {
+    try {
+        req.session.destroy((error) => {
+            return res.status(406).json({logout: false})
+        });
+        res.status(200).json({logout: true})
+    } catch(error) {
+        console.log(error)
+        res.status(406).json({logout: false})
+    }
+}

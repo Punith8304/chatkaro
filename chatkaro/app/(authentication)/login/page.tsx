@@ -58,10 +58,9 @@ export default function Login() {
                     errorMessage: "Password incorrect"
                 })
             } else {
-                dispatch(changeLogin({ login: true, userName: result.data.user.userName }))
+                dispatch(changeLogin({ login: true, userName: result.data.user.userName, checkingStatus: "success" }))
                 router.replace("/chat")
             }
-
         })
     }
 

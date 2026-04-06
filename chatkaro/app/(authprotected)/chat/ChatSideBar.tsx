@@ -6,9 +6,10 @@ import SidebarFallback from "@/components/sideBarFallback"
 import "./ChatSideBar.css";
 import axios from "axios"
 import { socket } from "@/services/socketService"
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/lib/store";
 import debounce from "@/services/debounce";
+import { changeLogin } from "@/lib/user/userSlice";
 
 export default function TerminalSidebar() {
   const [search, setSearch] = useState("");
@@ -22,6 +23,7 @@ export default function TerminalSidebar() {
   const [userFriends, setUserFriends] = useState<{ name: string }[]>([])
   const [peers, setPeers] = useState<{ userName: string }[]>([])
   const [searchResults, setSearchResults] = useState<string[]>([])
+  const dispatch = useDispatch<AppDispatch>()
 
   const searchDebouce = useCallback(debounce(async (search: string) => {
     const searchResults = await axios.get(`${endpoint}/chat/search?search=${search}`, { withCredentials: true })
@@ -59,6 +61,14 @@ export default function TerminalSidebar() {
 
 
   // const peers = Array.from({ length: 10 }, (_, i) => `peer_void_${i + 1}.py`);
+
+  async function handleLogout() {
+    const logout = await axios.get(`${endpoint}/authentication/logout`, { withCredentials: true })
+    if(logout.data.logout) {
+      dispatch(changeLogin({login: false, userName: "", checkingStatus: "idle"}))
+      router.replace("/login")
+    }
+  }
 
   return (
     <aside className="terminal-sidebar">
@@ -153,6 +163,12 @@ export default function TerminalSidebar() {
         <span>UTF-8</span>
         <span>L:{userFriends.length + peers.length}</span>
       </div>
+
+      <button 
+    className="terminal-logout-btn" 
+    onClick={handleLogout}>
+    <span className="exit-icon">⏻</span> logout
+  </button>
     </aside>
   )
 }

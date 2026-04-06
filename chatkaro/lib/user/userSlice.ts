@@ -27,11 +27,11 @@ const userSlice = createSlice({
     name: "userLogin",
     initialState: userLogin,
     reducers: {
-        changeLogin(state: userLoginType, action: PayloadAction<{ login: boolean, userName: string }>) {
+        changeLogin(state: userLoginType, action: PayloadAction<{ login: boolean, userName: string, checkingStatus: string }>) {
             return {
                 login: action.payload.login,
                 userName: action.payload.userName,
-                checkingStatus: "success"
+                checkingStatus: action.payload.checkingStatus
             }
         }
     },
